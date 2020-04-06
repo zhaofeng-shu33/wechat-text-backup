@@ -34,13 +34,9 @@ def parse_single_msg(msg_str):
     for d in s_i.find_all('dataitem'):
         if d.get('datatype') != '1':
             continue
-        try:
-            time = d.sourcetime.text
-            name = d.sourcename.text
-            content = d.datadesc.text
-        except Exception as e:
-            import pdb
-            pdb.set_trace()
+        time = d.sourcetime.text
+        name = d.sourcename.text
+        content = d.datadesc.text
         output_str += '{0} {1}:{2}\n'.format(time, name, content)
     return output_str
 
