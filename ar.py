@@ -32,10 +32,16 @@ def parse_single_msg(msg_str):
         features='html.parser')
     output_str = ''
     for d in s_i.find_all('dataitem'):
-        time = d.sourcetime.text
-        name = d.sourcename.text
-        content = d.datadesc.text
-        output_str + '{0} {1}:{2}\n'.format(time, name, content)
+        if d.get('datatype') != '1':
+            continue
+        try:
+            time = d.sourcetime.text
+            name = d.sourcename.text
+            content = d.datadesc.text
+        except Exception as e:
+            import pdb
+            pdb.set_trace()
+        output_str += '{0} {1}:{2}\n'.format(time, name, content)
     return output_str
 
 def parse_all_msg(msg_list):
