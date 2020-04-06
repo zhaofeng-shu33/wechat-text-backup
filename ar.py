@@ -27,8 +27,9 @@ def extract_dialog_part(str):
     return Ls
 
 def parse_single_msg(msg_str):
-    s = BeautifulSoup(msg_str)
-    s_i = BeautifulSoup(s.recorditem.text)
+    s = BeautifulSoup(msg_str, features='html.parser')
+    s_i = BeautifulSoup(s.recorditem.text,
+        features='html.parser')
     output_str = ''
     for d in s_i.find_all('dataitem'):
         time = d.sourcetime.text
