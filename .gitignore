@@ -1,3 +1,5 @@
+password.h
+*.db
 *.txt
 *.log
 __pycache__
