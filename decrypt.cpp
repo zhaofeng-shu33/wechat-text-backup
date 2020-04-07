@@ -109,7 +109,7 @@ int Decryptdb()
         if (0 != memcmp(hash_mac, pTemp + DEFAULT_PAGESIZE - reserve + IV_SIZE, sizeof(hash_mac)))
         {
             printf("\n 哈希值错误! \n");
-            getchar();
+            // getchar();
             return 0;
         }
 #endif
