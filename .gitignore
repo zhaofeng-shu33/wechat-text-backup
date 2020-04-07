@@ -1,5 +1,6 @@
 decrypt
 password.h
+*.tar.gz
 *.db
 *.txt
 *.log
