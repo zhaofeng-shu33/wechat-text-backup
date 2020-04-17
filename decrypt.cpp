@@ -138,7 +138,7 @@ int Decryptdb()
  
         memcpy(pDecryptPerPageBuffer + DEFAULT_PAGESIZE - reserve, pTemp + DEFAULT_PAGESIZE - reserve, reserve);
         char decFile[1024] = { 0 };
-        sprintf(decFile, "dec_%s", dbfilename);
+        sprintf(decFile, "%s.dec.db", dbfilename);
         FILE * fp;
         fp = fopen(decFile, "ab+");
         {
