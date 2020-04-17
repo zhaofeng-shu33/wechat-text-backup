@@ -6,8 +6,7 @@
 #include <openssl/evp.h>
 #include <openssl/aes.h>
 #include <openssl/hmac.h>
-#include "password.h"
- 
+unsigned char pass[32]; 
 #undef _UNICODE
 #define SQLITE_FILE_HEADER "SQLite format 3" 
 #define IV_SIZE 16
@@ -46,7 +45,12 @@ int main(int argc, char* argv[])
  
 int Decryptdb()
 {
-    FILE* fpdb;
+    FILE* fpdb, *pass_file_ptr;
+    pass_file_ptr = fopen("default.pass", "rb+");
+    if(pass_file_ptr) {
+        fread(pass, 1, 32, pass_file_ptr);
+        fclose(pass_file_ptr);
+    }
     fpdb = fopen(dbfilename, "rb+");
     if (!fpdb)
     {
