@@ -15,3 +15,9 @@ is that you can only use specific version of Windows wechat pc client (other OS 
 Also, the sent message of yourself through PC client is not saved. But there is an advantage. You can enable recent message sync when you approve the logging of PC wechat client on phone. Then you have about recent 4 weeks message. The hook problem
 gave some API which you can read the database file on PC. Therefore you can save these 4 weeks message on the fly. That is,
 in principle, you can enable the backup problem every 4 weeks when you login into your windows wechat client. But we do not know how this hook work well in the future.
+
+## Python tips
+Once copied hex string, we can use Python to write to the binary file.
+```Python
+a = bytes(bytearray.fromhex('A4CB')) # b'\xa4\xcb'
+```
