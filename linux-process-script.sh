@@ -2,21 +2,12 @@
 set -e -x
 tar -xzvf archive-$(date +%F).tar.gz
 mkdir -p dec_db/Multi
-cd db
 
-mapfile -t db_file_list < <(ls | grep db)
+mapfile -t db_file_list < <(find db/ -name "*.db")
 for i in "${db_file_list[@]}"; do
-    ../decrypt $i
+    ./decrypt $i
+    mv $i.dec.db dec_$i.dec.db
 done
 
-mv dec*.db ../dec_db/
 
-cd Multi
-mapfile -t db_file_list < <(ls | grep db)
-for i in "${db_file_list[@]}"; do
-    ../../decrypt $i
-done
-mv dec*.db ../../dec_db/Multi/
-
-cd ../..
-rm archive-$(date +%F).tar.gz
+# rm archive-$(date +%F).tar.gz
