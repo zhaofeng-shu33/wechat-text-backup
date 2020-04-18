@@ -13,8 +13,14 @@ There are also some other solutions which may not be stable. For example, you ca
 The advantage is that you can work using official wechat pc while saving the received message out of the box. The disadvantage 
 is that you can only use specific version of Windows wechat pc client (other OS is not supported, as I have searched GitHub).
 Also, the sent message of yourself through PC client is not saved. But there is an advantage. You can enable recent message sync when you approve the logging of PC wechat client on phone. Then you have about recent 20 items of message for recently used channel. The hook problem
-gave some API which you can read the database file on PC. Therefore you can save these 4 weeks message on the fly. That is,
-in principle, you can enable the backup problem every 4 weeks when you login into your windows wechat client. But we do not know how this hook work well in the future.
+gave some API which you can read the database file on PC. But we do not know how this hook work well in the future.
+
+Finally, there are solutions based on hacking wechat windows database password. The basic idea is to get the 32 bytes password from the memory directly. To achieve this goal, you need to install a specific version of wechat, for example 2.6.8.52, which is quite old. Then you need a windows debugger. For example, x64dbg is
+an open source alternative. Next you need to attach to wechat using the debugger and search the string reference in
+`wechatwin.dll` module; There are two occurrence of the string `DBFactory::encryptDB` and there is one which points to the
+instruction region which has `DB cann't be null`. At this region you can find `test edx edx`, which is a few lines lower than
+the three `push` instruction lines. Toggle a breakpoint at this instruction and you can find the register `edx` points to a
+memory address which holds the 32 bytes password.
 
 ## Python tips
 Once copied hex string, we can use Python to write to the binary file.
