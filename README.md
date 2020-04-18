@@ -20,7 +20,7 @@ an open source alternative. Next you need to attach to wechat using the debugger
 `wechatwin.dll` module; There are two occurrence of the string `DBFactory::encryptDB` and there is one which points to the
 instruction region which has `DB cann't be null`. At this region you can find `test edx edx`, which is a few lines lower than
 the three `push` instruction lines. Toggle a breakpoint at this instruction and you can find the register `edx` points to a
-memory address which holds the 32 bytes password.
+memory address which holds the 32 bytes password. After obtaining the password you need to upgrade your wechat to newer version. The password is not changed at least for compatibility.
 
 ## Python tips
 Once copied hex string, we can use Python to write to the binary file.
