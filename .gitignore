@@ -1,3 +1,4 @@
+*.pass
 .upload.sh
 decrypt
 password.h
