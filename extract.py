@@ -84,13 +84,21 @@ def translate_name(message_list, dic):
         if translated_name:
             message_entry[0] = translated_name
 
+def get_chatroom_list(cursor):
+    chatroom_list = []
+    sql_statement = 'select strUsrName from Session;'
+    cursor.execute(sql_statement)
+    for entry in cursor.fetchall():
+        chatroom_list.append(entry[0])
+    return chatroom_list
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--filename', default='Multi/MSG0.db.dec.db')
     parser.add_argument('--micro_filename', default='MicroMsg.db.dec.db')
     parser.add_argument('--working_dir', default='dec_db')
     parser.add_argument('--output_dir', default='read')
-    parser.add_argument('chatroom_id')
+    parser.add_argument('--chatroom_id', default='')
     args = parser.parse_args()
     cwd = os.getcwd()
     os.chdir(args.working_dir)
@@ -98,16 +106,26 @@ if __name__ == '__main__':
         conn_contact = sqlite3.connect(args.micro_filename)
         cursor_contact = conn_contact.cursor()
         contact_dic = get_contact_dic(cursor_contact)
+        if args.chatroom_id == '':
+            processing_chatlist = True
+        else:
+            processing_chatlist = False
     else:
         contact_dic = {}
+        processing_chatlist = False
     conn = sqlite3.connect(args.filename)
     cursor = conn.cursor()
-    message_list = get_message_list(cursor, args.chatroom_id)
-    if contact_dic:
-        translate_name(message_list, contact_dic)
-    alias_name = args.chatroom_id
-    if contact_dic and contact_dic.get(alias_name):
-        alias_name = contact_dic[alias_name]
-    output_file = os.path.join(args.output_dir, alias_name + '.md')
+    if processing_chatlist:
+        chatroom_list = get_chatroom_list(cursor_contact)
+    else:
+        chatroom_list = [args.chatroom_id]
     os.chdir(cwd)
-    write_message_list(message_list, output_file)
+    for chatroom in chatroom_list:
+        message_list = get_message_list(cursor, chatroom)
+        if contact_dic:
+            translate_name(message_list, contact_dic)
+        alias_name = chatroom
+        if contact_dic and contact_dic.get(alias_name):
+            alias_name = contact_dic[alias_name]
+        output_file = os.path.join(args.output_dir, alias_name + '.md')    
+        write_message_list(message_list, output_file)
