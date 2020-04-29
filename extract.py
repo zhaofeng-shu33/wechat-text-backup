@@ -11,6 +11,24 @@ REVOKE_TYPE = 10000
 IMAGE_TYPE = 3
 LINK_TYPE = 49
 POSITION_TYPE = 48
+VIDEO_TYPE = 43
+AUDIO_TYPE = 34
+CARD_TYPE = 42
+FRIEND_REQUEST_TYPE = 37
+CALL_TYPE = 50
+
+def get_wx_id(wx_byte):
+    wx_uni = wx_byte.decode('utf-8', 'replace')
+    for index, i in enumerate(wx_uni):
+        if not i.isprintable():
+            continue
+        start_index = index
+        break
+    for index, i in enumerate(wx_uni[start_index+1:]):
+        if i.isprintable():
+            continue
+        end_index = index
+    return wx_uni[start_index:end_index]
 
 def get_message_list(cursor, chatroom_id):
     message_list = [] # speaker_id, time-obj, message-text
@@ -28,7 +46,7 @@ def get_message_list(cursor, chatroom_id):
             wx_id = chatroom_id
         else:
             try:
-                wx_id = bytes_extra_obj.split(b'\x1a')[1].split(b'\x13')[1].decode('ascii')
+                wx_id = get_wx_id(bytes_extra_obj)
             except Exception as e:
                 pdb.set_trace()
         _timestamp = entry[1]
@@ -43,6 +61,16 @@ def get_message_list(cursor, chatroom_id):
             _content = '[link]'
         elif main_type == POSITION_TYPE:
             _content = '[position]'
+        elif main_type == VIDEO_TYPE:
+            _content = '[video]'
+        elif main_type == AUDIO_TYPE:
+            _content = '[audio]'
+        elif main_type == CARD_TYPE:
+            _content = '[card]'
+        elif main_type == FRIEND_REQUEST_TYPE:
+            _content = '[friend request]'
+        elif main_type == CALL_TYPE:
+            _content = '[call]'
         else:
             pdb.set_trace()
         message_list.append([wx_id, dt_object, _content])
@@ -127,5 +155,6 @@ if __name__ == '__main__':
         alias_name = chatroom
         if contact_dic and contact_dic.get(alias_name):
             alias_name = contact_dic[alias_name]
+        alias_name = alias_name.replace(' ', '').replace('/', '')
         output_file = os.path.join(args.output_dir, alias_name + '.md')    
         write_message_list(message_list, output_file)
