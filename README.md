@@ -27,3 +27,14 @@ Once copied hex string, we can use Python to write to the binary file.
 ```Python
 a = bytes(bytearray.fromhex('A4CB')) # b'\xa4\xcb'
 ```
+## Know issues
+Not works well for wechat version >= 2.9 which only allows partial decryption of `Multi/MSG0.db`;
+
+For wechat 2.8.0.112. It is tested that the message can be tracked.
+
+## Extract and Upload
+Run `python3 extract.py` and upload output.
+
+```shell
+ossutil64 cp -rf read oss://freiwilliger/wechat/
+```

@@ -7,3 +7,6 @@ password.h
 *.txt
 *.log
 __pycache__
+read
+.info.txt
+dec_db
