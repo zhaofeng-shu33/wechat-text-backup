@@ -61,7 +61,7 @@ def write_message_list(message_list, output_file):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--filename', default='MSG0.db.dec.db')
+    parser.add_argument('--filename', default='Multi/MSG0.db.dec.db')
     parser.add_argument('--working_dir', default='dec_db')
     parser.add_argument('--output_dir', default='read')
     parser.add_argument('chatroom_id')
