@@ -24,6 +24,8 @@ def get_message_list(cursor, chatroom_id):
         bytes_extra_obj = entry[0]
         if is_sender == 1:
             wx_id = 'me'
+        elif chatroom_id.find('chatroom') < 0:
+            wx_id = chatroom_id
         else:
             try:
                 wx_id = bytes_extra_obj.split(b'\x1a')[1].split(b'\x13')[1].decode('ascii')
@@ -75,7 +77,10 @@ def get_contact_dic(cursor):
 
 def translate_name(message_list, dic):
     for message_entry in message_list:
-        translated_name = dic.get(message_entry[0])
+        wx_id = message_entry[0]
+        if wx_id == 'me':
+            continue
+        translated_name = dic.get(wx_id)
         if translated_name:
             message_entry[0] = translated_name
 
@@ -100,6 +105,9 @@ if __name__ == '__main__':
     message_list = get_message_list(cursor, args.chatroom_id)
     if contact_dic:
         translate_name(message_list, contact_dic)
-    output_file = os.path.join(args.output_dir, args.chatroom_id + '.md')
+    alias_name = args.chatroom_id
+    if contact_dic and contact_dic.get(alias_name):
+        alias_name = contact_dic[alias_name]
+    output_file = os.path.join(args.output_dir, alias_name + '.md')
     os.chdir(cwd)
     write_message_list(message_list, output_file)
