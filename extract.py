@@ -58,19 +58,48 @@ def write_message_list(message_list, output_file):
     with open(output_file, 'w') as f:
         f.write(st)
 
+def get_contact_dic(cursor):
+    sql_statement = 'select Remark, NickName, UserName from Contact;'
+    cursor.execute(sql_statement)
+    dic = {}
+    for entry in cursor.fetchall():
+        remark = entry[0]
+        nick_name = entry[1]
+        wx_id = entry[2]
+        if remark == '':
+            _name = nick_name
+        else:
+            _name = remark
+        dic[wx_id] = _name
+    return dic
+
+def translate_name(message_list, dic):
+    for message_entry in message_list:
+        translated_name = dic.get(message_entry[0])
+        if translated_name:
+            message_entry[0] = translated_name
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--filename', default='Multi/MSG0.db.dec.db')
+    parser.add_argument('--micro_filename', default='MicroMsg.db.dec.db')
     parser.add_argument('--working_dir', default='dec_db')
     parser.add_argument('--output_dir', default='read')
     parser.add_argument('chatroom_id')
     args = parser.parse_args()
     cwd = os.getcwd()
     os.chdir(args.working_dir)
+    if os.path.exists(args.micro_filename):
+        conn_contact = sqlite3.connect(args.micro_filename)
+        cursor_contact = conn_contact.cursor()
+        contact_dic = get_contact_dic(cursor_contact)
+    else:
+        contact_dic = {}
     conn = sqlite3.connect(args.filename)
     cursor = conn.cursor()
     message_list = get_message_list(cursor, args.chatroom_id)
+    if contact_dic:
+        translate_name(message_list, contact_dic)
     output_file = os.path.join(args.output_dir, args.chatroom_id + '.md')
     os.chdir(cwd)
     write_message_list(message_list, output_file)
