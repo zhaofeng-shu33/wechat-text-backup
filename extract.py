@@ -1,4 +1,4 @@
-# this script is used to extract chathistory of one chatroom
+# this script is used to extract chathistory of one chatroom or all chatrooms
 import argparse
 import os
 import sqlite3
