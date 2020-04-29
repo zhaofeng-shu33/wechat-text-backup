@@ -28,6 +28,7 @@ def get_wx_id(wx_byte):
         if i.isprintable():
             continue
         end_index = index
+        break
     return wx_uni[start_index:end_index]
 
 def get_message_list(cursor, chatroom_id):
