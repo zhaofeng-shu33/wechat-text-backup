@@ -4,7 +4,7 @@ import os
 import sqlite3
 from datetime import datetime
 import pdb
-
+LATEST_TIME = datetime.min
 TEXT_TYPE = 1
 EXTERNAL_EMOJI_TYPE = 47
 REVOKE_TYPE = 10000
@@ -51,7 +51,10 @@ def get_message_list(cursor, chatroom_id):
             except Exception as e:
                 pdb.set_trace()
         _timestamp = entry[1]
-        dt_object = datetime.fromtimestamp(_timestamp)        
+        dt_object = datetime.fromtimestamp(_timestamp)
+        global LATEST_TIME
+        if dt_object > LATEST_TIME:
+            LATEST_TIME = dt_object
         if main_type == EXTERNAL_EMOJI_TYPE:
             _content = '[external emoji]'
         elif main_type == TEXT_TYPE:
@@ -159,3 +162,4 @@ if __name__ == '__main__':
         alias_name = alias_name.replace(' ', '').replace('/', '')
         output_file = os.path.join(args.output_dir, alias_name + '.md')    
         write_message_list(message_list, output_file)
+    print('latest message time', LATEST_TIME)
