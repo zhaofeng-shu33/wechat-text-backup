@@ -98,7 +98,7 @@ int Decryptdb()
     int offset = 16;
     while (pTemp < pDbBuffer + nFileSize)
     {
-        printf("解密数据页:%d/%d \n", nPage, int(nFileSize / DEFAULT_PAGESIZE));
+        // printf("解密数据页:%d/%d \n", nPage, int(nFileSize / DEFAULT_PAGESIZE));
  
 #ifndef NO_USE_HMAC_SHA1
         unsigned char hash_mac[HMAC_SHA1_SIZE] = { 0 };
@@ -150,6 +150,6 @@ int Decryptdb()
         offset = 0;
         pTemp += DEFAULT_PAGESIZE;
     }
-    printf("\n 解密成功! \n");
+    // printf("\n 解密成功! \n");
     return 0;
 }
