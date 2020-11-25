@@ -104,6 +104,8 @@ def get_contact_dic(cursor):
             _name = nick_name
         else:
             _name = remark
+        if wx_id.find('wxid_') >= 0:
+            wx_id = wx_id[:12]
         dic[wx_id] = _name
     return dic
 
