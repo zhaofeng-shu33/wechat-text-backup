@@ -129,7 +129,7 @@ def get_chatroom_list(cursor):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--filename', default='Multi/MSG0.db.dec.db')
+    parser.add_argument('--filename', default=['Multi/MSG0.db.dec.db', 'Multi/MSG0.db.dec.db'], nargs='+')
     parser.add_argument('--micro_filename', default='MicroMsg.db.dec.db')
     parser.add_argument('--working_dir', default='dec_db')
     parser.add_argument('--output_dir', default='read')
@@ -148,15 +148,20 @@ if __name__ == '__main__':
     else:
         contact_dic = {}
         processing_chatlist = False
-    conn = sqlite3.connect(args.filename)
-    cursor = conn.cursor()
     if processing_chatlist:
         chatroom_list = get_chatroom_list(cursor_contact)
     else:
         chatroom_list = [args.chatroom_id]
+    cursor_list = []
+    for filename in args.filename:
+        conn = sqlite3.connect(args.filename)
+        cursor = conn.cursor()
+        cursor_list.append(cursor)
     os.chdir(cwd)
     for chatroom in chatroom_list:
-        message_list = get_message_list(cursor, chatroom)
+        message_list = []
+        for cursor in cursor_list:
+            message_list.extend(get_message_list(cursor, chatroom))
         if contact_dic:
             translate_name(message_list, contact_dic)
         alias_name = chatroom
