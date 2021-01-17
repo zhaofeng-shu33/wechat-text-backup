@@ -154,7 +154,7 @@ if __name__ == '__main__':
         chatroom_list = [args.chatroom_id]
     cursor_list = []
     for filename in args.filename:
-        conn = sqlite3.connect(args.filename)
+        conn = sqlite3.connect(filename)
         cursor = conn.cursor()
         cursor_list.append(cursor)
     os.chdir(cwd)
