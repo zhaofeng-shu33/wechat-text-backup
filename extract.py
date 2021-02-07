@@ -61,6 +61,11 @@ def get_message_list(cursor, chatroom_id):
             _content = entry[2]
         elif main_type == IMAGE_TYPE:
             _content = '[image]'
+            start_index = bytes_extra_obj.find(b'Image')
+            end_index = bytes_extra_obj.find(b'.dat')
+            path_str = bytes_extra_obj[start_index + 5:end_index].decode('ascii')
+            path_str = '.' + path_str.replace('\\', '/') + '.jpg'
+            _content = '![](%s)' % path_str
         elif main_type == LINK_TYPE:
             _content = '[link]'
         elif main_type == POSITION_TYPE:
