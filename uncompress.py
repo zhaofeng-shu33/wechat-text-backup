@@ -1,6 +1,8 @@
+import pdb
+
 dic = {(60, 12): 4, (50, 0): 6, (57, 0):4, (65,2):4,
     (138, 1): 6, (8, 0): 5, (30, 1): 4, (13, 5): 5, (12, 1): 9,
-    (25, 5): 5, (26, 5): 9, (13, 0): 7, (27, 3): 4, (88, 10): 7,
+    (25, 5): 5, (26, 5): 9, (13, 0): 9, (27, 3): 4, (88, 10): 7,
     (17, 9): 14, (125, 4): 13, (34, 3): 8, (14, 8): 7, (15, 0): 12,
     (19, 1): 5, (87, 4): 5, (141, 5): 8, (12, 2): 9, (193, 1): 6,
     (35,1):5, (72,1): 6, (28, 3): 5, (65, 0): 6, (75, 1): 4,
@@ -27,7 +29,6 @@ def uncompress(byte_str):
                 print(valid_bytes.decode('utf-8'))
                 print(distance, backward_length)
                 print(valid_bytes[-1 * distance :])
-                import pdb
                 pdb.set_trace()
         else:
             forward_length = byte_str[pointer + 1] + offset + 1
@@ -38,9 +39,11 @@ def uncompress(byte_str):
                 print(valid_bytes.decode('utf-8'))
                 print(distance, backward_length)
                 print(valid_bytes[-1 * distance :])                
-                import pdb
                 pdb.set_trace()
             pointer += 2
+        if valid_bytes.find(b'soundtype') >= 0:
+            # pdb.set_trace()
+            pass
         valid_bytes += valid_bytes[-1 * distance : -1 * distance + backward_length]
         if forward_length > 0:
             valid_bytes += byte_str[pointer: pointer + forward_length]
