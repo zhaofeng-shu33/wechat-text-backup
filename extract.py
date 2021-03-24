@@ -4,6 +4,7 @@ import os
 import sqlite3
 from datetime import datetime
 import pdb
+from uncompress import extract_url
 LATEST_TIME = datetime.min
 TEXT_TYPE = 1
 EXTERNAL_EMOJI_TYPE = 47
@@ -69,9 +70,9 @@ def get_message_list(cursor, chatroom_id):
                 path_str = path_str.replace('.jpg', '.png')
             path_str = '.' + path_str
             _content = '![](%s)' % path_str
-        elif main_type == LINK_TYPE:
-            _content = '[link]'
-            pdb.set_trace()
+        elif main_type == LINK_TYPE:            
+            url = extract_url(entry[-1])
+            _content = url
         elif main_type == POSITION_TYPE:
             _content = '[position]'
         elif main_type == VIDEO_TYPE:
