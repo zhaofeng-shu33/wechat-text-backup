@@ -33,7 +33,7 @@ def get_wx_id(wx_byte):
 
 def get_message_list(cursor, chatroom_id):
     message_list = [] # speaker_id, time-obj, message-text
-    sql_statement = 'select BytesExtra, CreateTime, StrContent, Type, IsSender from MSG where StrTalker = "%s";' % chatroom_id
+    sql_statement = 'select BytesExtra, CreateTime, StrContent, Type, IsSender, CompressContent from MSG where StrTalker = "%s";' % chatroom_id
     cursor.execute(sql_statement)
     for entry in cursor.fetchall():
         main_type = entry[3]
@@ -71,6 +71,7 @@ def get_message_list(cursor, chatroom_id):
             _content = '![](%s)' % path_str
         elif main_type == LINK_TYPE:
             _content = '[link]'
+            pdb.set_trace()
         elif main_type == POSITION_TYPE:
             _content = '[position]'
         elif main_type == VIDEO_TYPE:
