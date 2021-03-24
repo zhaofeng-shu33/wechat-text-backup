@@ -12,7 +12,7 @@ def uncompress(byte_str):
     valid_bytes = byte_str[2:first_offset + 3]
     pointer = first_offset + 3
     total_len = len(byte_str)
-    while pointer < total_len:
+    while pointer < total_len:   
         distance = int.from_bytes(byte_str[pointer:pointer + 2], 'little')
         pointer += 2
         length_info = byte_str[pointer]
@@ -32,7 +32,7 @@ def uncompress(byte_str):
         else:
             forward_length = byte_str[pointer + 1] + offset + 1
             if dic2.get((distance, length_info)):
-                print((bin(distance), forward_length, bin(backward_length)), '=>', dic.get((distance, backward_length)))
+                print((bin(distance), forward_length, bin(backward_length)), '=>', dic2.get((distance, length_info)))
                 backward_length = dic2[(distance, length_info)]
             else:
                 print(valid_bytes.decode('utf-8'))
