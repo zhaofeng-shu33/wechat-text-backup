@@ -32,8 +32,9 @@ def uncompress(byte_str):
                 pdb.set_trace()
         else:
             forward_length = byte_str[pointer + 1] + offset + 1
+            backward_length = length_info - (length_info >> 4) * 16
             if dic2.get((distance, length_info)):
-                print((bin(distance), forward_length, bin(backward_length)), '=>', dic2.get((distance, length_info)))
+                print('X', (bin(distance), forward_length, bin(backward_length)), '=>', dic2.get((distance, length_info)))
                 backward_length = dic2[(distance, length_info)]
             else:
                 print(valid_bytes.decode('utf-8'))
