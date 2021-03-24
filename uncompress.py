@@ -1,9 +1,10 @@
-dic = {(60, 12): 4, (50, 0):6, (57, 0):4, (65,2):4,
+dic = {(60, 12): 4, (50, 0): 6, (57, 0):4, (65,2):4,
     (138, 1): 6, (8, 0): 5, (30, 1): 4, (13, 5): 5, (12, 1): 9,
-    (25, 5): 5, (26, 5): 9, (13, 0): 9, (27, 3): 4, (88, 10): 7,
+    (25, 5): 5, (26, 5): 9, (13, 0): 7, (27, 3): 4, (88, 10): 7,
     (17, 9): 14, (125, 4): 13, (34, 3): 8, (14, 8): 7, (15, 0): 12,
     (19, 1): 5, (87, 4): 5, (141, 5): 8, (12, 2): 9, (193, 1): 6,
-    (35,1):5, (72,1): 6, (28, 3): 5}
+    (35,1):5, (72,1): 6, (28, 3): 5, (65, 0): 6, (75, 1): 4,
+    (85, 3): 5, (15, 3): 7}
 dic2 = {(58, 240):16, (29, 241):5, (40, 241):5, (101, 241):5, (7,242):5}
 def uncompress(byte_str):
     offset = 256 - byte_str[0]  # possible value: 14
@@ -30,10 +31,13 @@ def uncompress(byte_str):
                 pdb.set_trace()
         else:
             forward_length = byte_str[pointer + 1] + offset + 1
-            if dic2.get(length_info):
-                print('use dic2', distance, length_info)
-                backward_length = dic2[length_info]
+            if dic2.get((distance, length_info)):
+                print((bin(distance), forward_length, bin(backward_length)), '=>', dic.get((distance, backward_length)))
+                backward_length = dic2[(distance, length_info)]
             else:
+                print(valid_bytes.decode('utf-8'))
+                print(distance, backward_length)
+                print(valid_bytes[-1 * distance :])                
                 import pdb
                 pdb.set_trace()
             pointer += 2

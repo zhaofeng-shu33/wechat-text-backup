@@ -1,0 +1,1 @@
+cp /media/data/feng/wechat-text-backup/read/*.md read/
