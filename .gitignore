@@ -12,3 +12,4 @@ __pycache__
 read
 .info.txt
 dec_db
+*.bin
