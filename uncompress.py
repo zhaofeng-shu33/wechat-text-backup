@@ -14,41 +14,35 @@ def uncompress(byte_str):
     valid_bytes = byte_str[2:first_offset + 3]
     pointer = first_offset + 3
     total_len = len(byte_str)
+    next_backward_length = 6
     while pointer < total_len:   
+        backward_length = next_backward_length
         distance = int.from_bytes(byte_str[pointer:pointer + 2], 'little')
         pointer += 2
         length_info = byte_str[pointer]
         if length_info < 240: # 0b11110000
             pointer += 1
             forward_length = length_info >> 4
-            backward_length = length_info - forward_length * 16
-            if dic.get((distance, backward_length)):
-                print((bin(distance), forward_length, bin(backward_length)), '=>', dic.get((distance, backward_length)))
-                backward_length = dic[(distance, backward_length)]
-            else:
-                print(valid_bytes.decode('utf-8'))
-                print(distance, backward_length)
-                print(valid_bytes[-1 * distance :])
-                pdb.set_trace()
+            next_backward_length = length_info - forward_length * 16 + 4
         else:
             forward_length = byte_str[pointer + 1] + offset + 1
-            backward_length = length_info - (length_info >> 4) * 16
-            if dic2.get((distance, length_info)):
-                print('X', (bin(distance), forward_length, bin(backward_length)), '=>', dic2.get((distance, length_info)))
-                backward_length = dic2[(distance, length_info)]
-            else:
-                print(valid_bytes.decode('utf-8'))
-                print(distance, backward_length)
-                print(valid_bytes[-1 * distance :])                
-                pdb.set_trace()
+            next_backward_length = length_info - (length_info >> 4) * 16 + 4
             pointer += 2
-        if valid_bytes.find(b'soundtype') >= 0:
-            # pdb.set_trace()
-            pass
+        if next_backward_length == 19:
+            next_backward_length += byte_str[pointer]
+            pointer += 1
+            pdb.set_trace()
+        print(pointer, forward_length)
+        if -1 * distance + backward_length >= 0:
+            pdb.set_trace()
         valid_bytes += valid_bytes[-1 * distance : -1 * distance + backward_length]
         if forward_length > 0:
             valid_bytes += byte_str[pointer: pointer + forward_length]
         pointer += forward_length
+        try:
+            valid_bytes.decode('utf-8')
+        except:
+            pdb.set_trace()
     return valid_bytes.decode('utf-8')
 
 if __name__ == '__main__':
