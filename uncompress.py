@@ -34,11 +34,17 @@ def uncompress(byte_str):
             next_backward_length = length_info - (length_info >> 4) * 16 + 4
             pointer += 2
         # print(pointer, forward_length)
-        while -1 * distance + backward_length >= 0:
-            valid_bytes += valid_bytes[-1 * distance : -1]
-            backward_length -= (distance - 1)
+        if distance == 1:
+            for _ in range(backward_length):
+                valid_bytes += valid_bytes[-1 :]
         else:
-            valid_bytes += valid_bytes[-1 * distance : -1 * distance + backward_length]
+            while -1 * distance + backward_length > 0:
+                valid_bytes += valid_bytes[-1 * distance : -1]
+                backward_length -= (distance - 1)
+            if -1 * distance + backward_length == 0:
+                valid_bytes += valid_bytes[-1 * distance :]
+            else:
+                valid_bytes += valid_bytes[-1 * distance : -1 * distance + backward_length]
         if forward_length > 0:
             valid_bytes += byte_str[pointer: pointer + forward_length]
         pointer += forward_length
