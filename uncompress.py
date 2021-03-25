@@ -7,7 +7,7 @@ def extract_url(byte_str):
         return 'Unknown Link'
     return match_obj.group(1)
 
-def uncompress(byte_str):
+def uncompress(byte_str, verbose=False):
     offset = byte_str[0] >> 4 # possible value: 14
     next_backward_length = 4 + byte_str[0] - offset * 16
     pointer = 1
@@ -30,10 +30,13 @@ def uncompress(byte_str):
             forward_length = length_info >> 4
             next_backward_length = length_info - forward_length * 16 + 4
         else:
+            if byte_str[pointer + 1] == 255:
+                pdb.set_trace()
             forward_length = byte_str[pointer + 1] + 15
             next_backward_length = length_info - (length_info >> 4) * 16 + 4
             pointer += 2
-        # print(pointer, forward_length)
+        if verbose:
+            print(hex(pointer), forward_length)
         if distance == 1:
             for _ in range(backward_length):
                 valid_bytes += valid_bytes[-1 :]
@@ -48,13 +51,18 @@ def uncompress(byte_str):
         if forward_length > 0:
             valid_bytes += byte_str[pointer: pointer + forward_length]
         pointer += forward_length
-        try:
-            valid_bytes.decode('utf-8')
-        except:
-            pdb.set_trace()
-    return valid_bytes.decode('utf-8')
+        if verbose:
+            try:
+                valid_bytes.decode('utf-8')
+            except:
+                pdb.set_trace()
+    try:
+        return valid_bytes.decode('utf-8')
+    except:
+        open('a3.bin', 'wb').write(byte_str)
+        valid_bytes.decode('utf-8')
 
 if __name__ == '__main__':
-    f = open('a2.bin', 'rb')
+    f = open('a3.bin', 'rb')
     st = f.read()
-    print(uncompress(st))
+    print(uncompress(st, verbose=True))
