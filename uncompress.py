@@ -1,5 +1,5 @@
 import pdb
-
+import lz4.block
 dic = {(60, 12): 4, (50, 0): 6, (57, 0):4, (65,2):4,
     (138, 1): 6, (8, 0): 5, (30, 1): 4, (13, 5): 5, (12, 1): 9,
     (25, 5): 5, (26, 5): 9, (13, 0): 9, (27, 3): 4, (88, 10): 7,
@@ -19,6 +19,9 @@ def uncompress(byte_str):
         backward_length = next_backward_length
         distance = int.from_bytes(byte_str[pointer:pointer + 2], 'little')
         pointer += 2
+        if backward_length == 19:
+            backward_length += byte_str[pointer]
+            pointer += 1
         length_info = byte_str[pointer]
         if length_info < 240: # 0b11110000
             pointer += 1
@@ -28,10 +31,6 @@ def uncompress(byte_str):
             forward_length = byte_str[pointer + 1] + offset + 1
             next_backward_length = length_info - (length_info >> 4) * 16 + 4
             pointer += 2
-        if next_backward_length == 19:
-            next_backward_length += byte_str[pointer]
-            pointer += 1
-            pdb.set_trace()
         print(pointer, forward_length)
         if -1 * distance + backward_length >= 0:
             pdb.set_trace()
