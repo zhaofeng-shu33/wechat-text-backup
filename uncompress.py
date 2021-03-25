@@ -9,12 +9,15 @@ dic = {(60, 12): 4, (50, 0): 6, (57, 0):4, (65,2):4,
     (85, 3): 5, (15, 3): 7}
 dic2 = {(58, 240):16, (29, 241):5, (40, 241):5, (101, 241):5, (7,242):5}
 def uncompress(byte_str):
-    offset = 256 - byte_str[0]  # possible value: 14
-    first_offset = byte_str[1] + offset
-    valid_bytes = byte_str[2:first_offset + 3]
-    pointer = first_offset + 3
+    offset = byte_str[0] >> 4 # possible value: 14
+    next_backward_length = 4 + byte_str[0] - offset * 16
+    pointer = 1
+    if offset == 15:
+        offset += byte_str[1]
+        pointer += 1
+    valid_bytes = byte_str[pointer:pointer + offset]
+    pointer += offset
     total_len = len(byte_str)
-    next_backward_length = 6
     while pointer < total_len:   
         backward_length = next_backward_length
         distance = int.from_bytes(byte_str[pointer:pointer + 2], 'little')
@@ -28,7 +31,7 @@ def uncompress(byte_str):
             forward_length = length_info >> 4
             next_backward_length = length_info - forward_length * 16 + 4
         else:
-            forward_length = byte_str[pointer + 1] + offset + 1
+            forward_length = byte_str[pointer + 1] + 15
             next_backward_length = length_info - (length_info >> 4) * 16 + 4
             pointer += 2
         print(pointer, forward_length)
