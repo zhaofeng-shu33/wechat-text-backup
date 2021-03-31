@@ -1,27 +1,20 @@
 # wechat-text-backup
-The privilege of wechat is higher on mobile phone than on pc. For example, mobile phone can save many messages but on pc the
-message is limited. Text messages are saved in encrypted sqlite database which cannot be decrypted unless you have root access
-to your mobile phone. But usually users do not have root access to their mobile phone. Therefore we need to seek a tradeoff between
-the two things: tech-hacking and time-saving.
+This project focuses backup wechat messages of windows client.
 
-There are some unofficial wechat personal pc client which can act as Wechat PC client but is fexible to save messages in custom
-format. The disadvantage is also obvious. You can only save "current" received message. During the time you use the software, you
-cannot use your other wechat pc client. But there is an advantage. You can save chat history. Since in official wechat pc client,
-you cannot copy the whole chat history (combined). And using some dependent open-source client you can save the xml chat history.
-
-There are also some other solutions which may not be stable. For example, you can use some hook for official wechat pc.
-The advantage is that you can work using official wechat pc while saving the received message out of the box. The disadvantage 
-is that you can only use specific version of Windows wechat pc client (other OS is not supported, as I have searched GitHub).
-Also, the sent message of yourself through PC client is not saved. But there is an advantage. You can enable recent message sync when you approve the logging of PC wechat client on phone. Then you have about recent 20 items of message for recently used channel. The hook problem
-gave some API which you can read the database file on PC. But we do not know how this hook work well in the future.
-
-Finally, there are solutions based on hacking wechat windows database password. The basic idea is to get the 32 bytes password from the memory directly. To achieve this goal, you need to install a specific version of wechat, for example 2.6.8.52, which is quite old. Then you need a windows debugger. For example, x64dbg is
-an open source alternative. Next you need to attach to wechat using the debugger and search the string reference in
+## Steps
+1. Hacking the wechat app password
+2. Decrypt the database using `./decrypt`
+3. Extract the message using `extract.py`
+### Hacking the password
+The sqlite databases for wechat windows client are encrypted. You need to hack the database password before you can do anything. The feasible approach is to get the 32 bytes password from the memory directly. To achieve this goal, you probably need to install an old version of wechat, for example 2.6.8.52. Then you need a windows debugger. For example, x64dbg is
+an open source alternative. Next you need to attach the debuuger to wechat and search the string reference in
 `wechatwin.dll` module; There are two occurrence of the string `DBFactory::encryptDB` and there is one which points to the
 instruction region which has `DB cann't be null`. At this region you can find `test edx edx`, which is a few lines lower than
 the three `push` instruction lines. Toggle a breakpoint at this instruction and you can find the register `edx` points to a
-memory address which holds the 32 bytes password. After obtaining the password you need to upgrade your wechat to newer version. The password is not changed at least for compatibility.
-
+memory address which holds the 32 bytes password. After obtaining the password you can upgrade
+your wechat to a newer version like 2.8.0.112. The password is not changed at least for compatibility.
+### Decrypt the database
+I finish this step on linux. See [decrypt.md](./decrypt.md) for detail.
 ## Python tips
 Once copied hex string, we can use Python to write to the binary file.
 ```Python
@@ -33,7 +26,7 @@ Not works well for wechat version >= 2.9 which only allows partial decryption of
 For wechat 2.8.0.112. It is tested that the message can be tracked.
 
 ## CompressContent
-in LZ4 Block Format
+compressed bytes in LZ4 Block Format
 
 ## Extract and Upload
 Run `python3 extract.py` and upload output.
@@ -41,3 +34,14 @@ Run `python3 extract.py` and upload output.
 ```shell
 ossutil64 cp -rf read oss://freiwilliger/wechat/
 ```
+## Other solutions
+### iphone
+Using itune to get the data to pc. Then use [WechatExport-iOS](https://github.com/stomakun/WechatExport-iOS/pull/12) to get the text message. It seems that the sqlite databases are not encrypted. You have Visual Studio on windows to
+compile the project. I have tested this method on March 3th, 2021. It works.
+
+It seems that in Chinese market there is service provided by louyue company. It charges the user about 150 RMB to get the message.
+### android
+Requiring root privilege on android phone.
+See [wechat-dump](https://github.com/ppwwyyxx/wechat-dump) for detail.
+I do not have root access to my android phone. Therefore, I did not test this
+kind of method.
