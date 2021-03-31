@@ -22,6 +22,9 @@ def uncompress(byte_str, verbose=False):
         distance = int.from_bytes(byte_str[pointer:pointer + 2], 'little')
         pointer += 2
         if backward_length == 19:
+            while byte_str[pointer] == 255:
+                pointer += 1
+                backward_length += 255
             backward_length += byte_str[pointer]
             pointer += 1
         length_info = byte_str[pointer]
@@ -30,9 +33,11 @@ def uncompress(byte_str, verbose=False):
             forward_length = length_info >> 4
             next_backward_length = length_info - forward_length * 16 + 4
         else:
-            if byte_str[pointer + 1] == 255:
-                pdb.set_trace()
-            forward_length = byte_str[pointer + 1] + 15
+            forward_length = 15
+            while byte_str[pointer + 1] == 255:
+                pointer += 1
+                forward_length += 255
+            forward_length += byte_str[pointer + 1]
             next_backward_length = length_info - (length_info >> 4) * 16 + 4
             pointer += 2
         if verbose:
