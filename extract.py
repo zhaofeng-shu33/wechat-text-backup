@@ -4,7 +4,7 @@ import os
 import sqlite3
 from datetime import datetime
 import pdb
-from uncompress import extract_url
+from uncompress import extract_content
 LATEST_TIME = datetime.min
 TEXT_TYPE = 1
 EXTERNAL_EMOJI_TYPE = 47
@@ -17,7 +17,7 @@ AUDIO_TYPE = 34
 CARD_TYPE = 42
 FRIEND_REQUEST_TYPE = 37
 CALL_TYPE = 50
-
+INVITATION_TYPE = 10002
 def get_wx_id(wx_byte):
     wx_uni = wx_byte.decode('utf-8', 'replace')
     for index, i in enumerate(wx_uni):
@@ -34,7 +34,7 @@ def get_wx_id(wx_byte):
 
 def get_message_list(cursor, chatroom_id):
     message_list = [] # speaker_id, time-obj, message-text
-    sql_statement = 'select BytesExtra, CreateTime, StrContent, Type, IsSender, CompressContent from MSG where StrTalker = "%s";' % chatroom_id
+    sql_statement = 'select BytesExtra, CreateTime, StrContent, Type, IsSender, CompressContent, SubType from MSG where StrTalker = "%s";' % chatroom_id
     cursor.execute(sql_statement)
     for entry in cursor.fetchall():
         main_type = entry[3]
@@ -71,8 +71,7 @@ def get_message_list(cursor, chatroom_id):
             path_str = '.' + path_str
             _content = '![](%s)' % path_str
         elif main_type == LINK_TYPE:            
-            url = extract_url(entry[-1])
-            _content = url
+            _content = extract_content(entry[5], entry[6])
         elif main_type == POSITION_TYPE:
             _content = '[position]'
         elif main_type == VIDEO_TYPE:
@@ -85,6 +84,8 @@ def get_message_list(cursor, chatroom_id):
             _content = '[friend request]'
         elif main_type == CALL_TYPE:
             _content = '[call]'
+        elif main_type == INVITATION_TYPE:
+            _content = '[invitation]'
         else:
             pdb.set_trace()
         message_list.append([wx_id, dt_object, _content])
