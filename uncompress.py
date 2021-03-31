@@ -77,6 +77,7 @@ def extract_content(byte_str, subtype):
     return content
 
 def uncompress(byte_str, verbose=False):
+    # compress data in LZ4 format
     offset = byte_str[0] >> 4 # possible value: 14
     next_backward_length = 4 + byte_str[0] - offset * 16
     pointer = 1
