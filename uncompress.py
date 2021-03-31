@@ -12,7 +12,10 @@ def uncompress(byte_str, verbose=False):
     next_backward_length = 4 + byte_str[0] - offset * 16
     pointer = 1
     if offset == 15:
-        offset += byte_str[1]
+        while byte_str[pointer] == 255:
+            pointer += 1
+            offset += 255
+        offset += byte_str[pointer]
         pointer += 1
     valid_bytes = byte_str[pointer:pointer + offset]
     pointer += offset
