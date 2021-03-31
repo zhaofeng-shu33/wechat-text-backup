@@ -87,7 +87,7 @@ def get_message_list(cursor, chatroom_id):
         elif main_type == INVITATION_TYPE:
             _content = '[invitation]'
         else:
-            pdb.set_trace()
+            _content = '[unknown type]'
         message_list.append([wx_id, dt_object, _content])
     return message_list
 

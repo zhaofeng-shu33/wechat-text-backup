@@ -18,6 +18,8 @@ ONLINE_VIDEO_TYPE_2 = 54
 RED_PACKET_TYPE = 2003
 SOLITAIRE_TYPE = 53 # Chinese: people chain
 MONEY_TRANSFER = 2000
+LOCATION_SHARING_TYPE = 17
+FAVORITE_SHARING = 24
 
 def extract_url(byte_str):
     uncompressed_content = uncompress(byte_str)
@@ -66,8 +68,12 @@ def extract_content(byte_str, subtype):
         content = '[people chain]'
     elif subtype == MONEY_TRANSFER:
         content = '[money transfer]'
+    elif subtype == LOCATION_SHARING_TYPE:
+        content = '[location sharing]'
+    elif subtype == FAVORITE_SHARING:
+        content = '[favorite sharing]'
     else:
-        pdb.set_trace()
+        content = '[unknown link type]'
     return content
 
 def uncompress(byte_str, verbose=False):
