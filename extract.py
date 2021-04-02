@@ -32,7 +32,7 @@ def get_wx_id(wx_byte):
         break
     return wx_uni[start_index:end_index]
 
-def get_message_list(cursor, chatroom_id):
+def get_message_list(cursor, chatroom_id, enable_images=False, enable_link=False):
     message_list = [] # speaker_id, time-obj, message-text
     sql_statement = 'select BytesExtra, CreateTime, StrContent, Type, IsSender, CompressContent, SubType from MSG where StrTalker = "%s";' % chatroom_id
     cursor.execute(sql_statement)
@@ -62,16 +62,19 @@ def get_message_list(cursor, chatroom_id):
             _content = entry[2]
         elif main_type == IMAGE_TYPE:
             _content = '[image]'
-            start_index = bytes_extra_obj.find(b'Image')
-            end_index = bytes_extra_obj.find(b'.dat')
-            path_str = bytes_extra_obj[start_index + 5:end_index].decode('ascii')
-            path_str = path_str.replace('\\', '/') + '.jpg'
-            if not os.path.exists('read' + path_str):
-                path_str = path_str.replace('.jpg', '.png')
-            path_str = '.' + path_str
-            _content = '![](%s)' % path_str
-        elif main_type == LINK_TYPE:            
-            _content = extract_content(entry[5], entry[6])
+            if enable_images:
+                start_index = bytes_extra_obj.find(b'Image')
+                end_index = bytes_extra_obj.find(b'.dat')
+                path_str = bytes_extra_obj[start_index + 5:end_index].decode('ascii')
+                path_str = path_str.replace('\\', '/') + '.jpg'
+                if not os.path.exists('read' + path_str):
+                    path_str = path_str.replace('.jpg', '.png')
+                path_str = '.' + path_str
+                _content = '![](%s)' % path_str
+        elif main_type == LINK_TYPE:
+            _content = '[link]'
+            if enable_link:
+                _content = extract_content(entry[5], entry[6])
         elif main_type == POSITION_TYPE:
             _content = '[position]'
         elif main_type == VIDEO_TYPE:
@@ -143,6 +146,7 @@ if __name__ == '__main__':
     parser.add_argument('--filename', default=['Multi/MSG0.db.dec.db', 'Multi/MSG1.db.dec.db'], nargs='+')
     parser.add_argument('--micro_filename', default='MicroMsg.db.dec.db')
     parser.add_argument('--enable_images', const=True, default=False, nargs='?')
+    parser.add_argument('--enable_links', const=True, default=False, nargs='?')
     parser.add_argument('--working_dir', default='dec_db')
     parser.add_argument('--output_dir', default='read')
     parser.add_argument('--chatroom_id', default='')
@@ -173,7 +177,7 @@ if __name__ == '__main__':
     for chatroom in chatroom_list:
         message_list = []
         for cursor in cursor_list:
-            message_list.extend(get_message_list(cursor, chatroom))
+            message_list.extend(get_message_list(cursor, chatroom, args.enable_images, args.enable_links))
         if contact_dic:
             translate_name(message_list, contact_dic)
         alias_name = chatroom
