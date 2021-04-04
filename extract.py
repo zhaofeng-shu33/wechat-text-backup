@@ -19,18 +19,11 @@ FRIEND_REQUEST_TYPE = 37
 CALL_TYPE = 50
 INVITATION_TYPE = 10002
 def get_wx_id(wx_byte):
-    wx_uni = wx_byte.decode('utf-8', 'replace')
-    for index, i in enumerate(wx_uni):
-        if not i.isprintable():
-            continue
-        start_index = index
-        break
-    for index, i in enumerate(wx_uni[start_index+1:]):
-        if i.isprintable():
-            continue
-        end_index = index
-        break
-    return wx_uni[start_index:end_index]
+    # see https://daily.zhihu.com/story/8807166
+    start_index = wx_byte.find(b'\x08\x01\x12')
+    length = wx_byte[start_index + 3]
+    start_index += 4
+    return wx_byte[start_index: start_index + length].decode('utf-8')
 
 def get_message_list(cursor, chatroom_id, enable_images=False, enable_link=False):
     message_list = [] # speaker_id, time-obj, message-text

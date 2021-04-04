@@ -12,10 +12,10 @@ an open source alternative. Next you need to attach the debuuger to wechat and s
 `wechatwin.dll` module; There are two occurrence of the string `DBFactory::encryptDB` and there is one which points to the
 instruction region which has `DB cann't be null`. At this region you can find `test edx edx`, which is a few lines lower than
 the three `push` instruction lines. Toggle a breakpoint at this instruction and you can find the register `edx` points to a
-memory address which holds the 32 bytes password. After obtaining the password you can upgrade
+memory address which holds the 32 bytes password. After obtaining the password, you can upgrade
 your wechat to a newer version like 2.8.0.112. The password is not changed at least for compatibility.
 ### Decrypt the database
-I finish this step on linux. See [decrypt.md](./decrypt.md) for detail.
+I finish this step on Linux. See [decrypt.md](./decrypt.md) for detail.
 ### Extracting the message
 Use `python3 extract.py`.
 
