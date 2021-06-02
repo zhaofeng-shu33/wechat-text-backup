@@ -100,7 +100,7 @@ def write_message_list(message_list, output_file):
         f.write(st)
 
 def get_contact_dic(cursor):
-    sql_statement = 'select Remark, NickName, UserName from Contact;'
+    sql_statement = 'select Remark, NickName, UserName, Alias from Contact;'
     cursor.execute(sql_statement)
     dic = {}
     for entry in cursor.fetchall():
@@ -112,6 +112,12 @@ def get_contact_dic(cursor):
         else:
             _name = remark
         dic[wx_id] = _name
+        alias = entry[3]
+        if alias != '':
+            if remark != '':
+                dic[alias] = remark
+            else:
+                dic[alias] = nick_name
     return dic
 
 def translate_name(message_list, dic):
