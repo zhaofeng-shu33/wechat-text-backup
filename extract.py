@@ -96,7 +96,7 @@ def write_message_list(message_list, output_file):
         st += time_obj.strftime("%Y-%m-%d, %H:%M:%S")
         st += ' : ' + wx_id + '\n\t'
         st += _content + '\n\n'
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', encoding='utf-8') as f:
         f.write(st)
 
 def get_contact_dic(cursor):
@@ -118,6 +118,11 @@ def get_contact_dic(cursor):
                 dic[alias] = remark
             else:
                 dic[alias] = nick_name
+    sql_statement = 'select strUsrName, strNickName from Session;'
+    cursor.execute(sql_statement)
+    for entry in cursor.fetchall():
+        if entry[0].find('chatroom') > 0 and len(entry[1]) > 0:
+            dic[entry[0]] = entry[1].replace('|', '_').replace('+','_')
     return dic
 
 def translate_name(message_list, dic):
