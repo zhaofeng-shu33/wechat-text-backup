@@ -118,11 +118,6 @@ def get_contact_dic(cursor):
                 dic[alias] = remark
             else:
                 dic[alias] = nick_name
-    sql_statement = 'select strUsrName, strNickName from Session;'
-    cursor.execute(sql_statement)
-    for entry in cursor.fetchall():
-        if entry[0].find('chatroom') > 0 and len(entry[1]) > 0:
-            dic[entry[0]] = entry[1].replace('|', '_').replace('+','_')
     return dic
 
 def translate_name(message_list, dic):
