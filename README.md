@@ -27,8 +27,11 @@ Use `python3 extract.py`.
 
 ## Other solutions
 ### iphone
-Using itune to get the data to pc. Then use [WechatExport-iOS](https://github.com/stomakun/WechatExport-iOS/pull/12) to get the text message. It seems that the sqlite databases are not encrypted. You have Visual Studio on windows to
+Using itune to get the data to pc. Then use [WechatExport-iOS](https://github.com/stomakun/WechatExport-iOS/pull/12) to get the text message. It seems that the sqlite databases are not encrypted. You should have Visual Studio on windows to
 compile the project. I have tested this method on March 3th, 2021. It works.
+
+The wechat client of windows may not receive complete messages due to shut down. In this case, the phone backup is
+more comprehensive but lacks flexibility since it needs some manual steps.
 
 It seems that in Chinese market there is service provided by louyue company. It charges the user about 150 RMB to get the message.
 ### android
