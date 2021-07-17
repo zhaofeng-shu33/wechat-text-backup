@@ -4,7 +4,7 @@ rm -rf db
 mkdir -p db/Multi
 cp "$user"/MicroMsg.db db/
 
-mapfile -t db_file_list < <(ls Multi | grep ^MSG[0-9].db$)
+mapfile -t db_file_list < <(ls "$user"/Multi | grep ^MSG[0-9].db$)
 for i in "${db_file_list[@]}"; do
     cp "$user"/Multi/$i db/Multi/$i
 done
