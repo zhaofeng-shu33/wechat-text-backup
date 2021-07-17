@@ -139,7 +139,7 @@ def get_chatroom_list(cursor):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--filename', default=['Multi/MSG0.db.dec.db', 'Multi/MSG1.db.dec.db'], nargs='+')
+    parser.add_argument('--filename', default=['Multi/MSG0.db.dec.db', 'Multi/MSG1.db.dec.db', 'Multi/MSG2.db.dec.db'], nargs='+')
     parser.add_argument('--micro_filename', default='MicroMsg.db.dec.db')
     parser.add_argument('--enable_images', const=True, default=False, nargs='?')
     parser.add_argument('--enable_links', const=True, default=False, nargs='?')
